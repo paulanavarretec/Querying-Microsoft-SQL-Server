@@ -1,17 +1,17 @@
---1. Mostrar cu·ntos clientes existen en cada PaÌs.
+--1. Mostrar cu√°ntos clientes existen en cada Pa√≠s.
 select Country, count(CustomerID) CantidadClientes
 from Customers
 group by Country
 order by CantidadClientes desc
 
---2. Mostrar cu·ntos proveedores existen en cada Ciudad y PaÌs.
+--2. Mostrar cu√°ntos proveedores existen en cada Ciudad y Pa√≠s.
 select country, City, count(*)
 from Suppliers
 group by country, City
 
 select * from Suppliers
 
---3. Mostrar el numero de ordenes de cada uno de los clientes por aÒo,luego ordenar codigo del cliente y el aÒo.
+--3. Mostrar el numero de ordenes de cada uno de los clientes por a√±o,luego ordenar codigo del cliente y el a√±o.
 select c.CompanyName, year(o.OrderDate), count(*)
 from Orders o inner join customers c
 	on c.CustomerID = o.CustomerID
@@ -25,13 +25,13 @@ from Categories c inner join Products p
 group by c.CategoryName
 order by 2 desc
 
---5. Contar el numero de ordenes que se han realizado por aÒos y meses, luego debe ser ordenado por aÒo y por mes.
-select year(orderdate) A—O, month(orderdate) MES, count(1) 'Cantidad de Ordenes'
+--5. Contar el numero de ordenes que se han realizado por a√±os y meses, luego debe ser ordenado por a√±o y por mes.
+select year(orderdate) A√ëO, month(orderdate) MES, count(1) 'Cantidad de Ordenes'
 from Orders
 group by year(orderdate), month(orderdate) 
-order by A—O desc, MES asc
+order by A√ëO desc, MES asc
 
---6. Calcular el stock total de los productos por cada categorÌa. Mostrar el nombre de la categorÌa y el stock por categorÌa.
+--6. Calcular el stock total de los productos por cada categor√≠a. Mostrar el nombre de la categor√≠a y el stock por categor√≠a.
 select top 5
 	c.CategoryName, sum(p.UnitsInStock) Cantidad
 from Products p inner join Categories c
@@ -40,15 +40,15 @@ group by c.CategoryName
 order by 2 desc
 
 --7. Seleccionar los 5 productos mas vendidos
---8. Seleccionar las categorÌas que tengan m·s 10 productos. Mostrar el nombre de la categorÌa y el n˙mero de productos.
+--8. Seleccionar las categor√≠as que tengan m√°s 10 productos. Mostrar el nombre de la categor√≠a y el n√∫mero de productos.
 select c.CategoryName, count(*) Cantidad
 from Products p inner join Categories c
 	on p.CategoryID = c.CategoryID
 group by c.CategoryName
 having count(*) > 10
 
---9. Calcular el stock total de los productos por cada categorÌa. Mostrar el nombre de la
---   categorÌa y el stock por categorÌa. Solamente las categorÌas 2, 5 y 8.
+--9. Calcular el stock total de los productos por cada categor√≠a. Mostrar el nombre de la
+--   categor√≠a y el stock por categor√≠a. Solamente las categor√≠as 2, 5 y 8.
 create view ProductosPorCategoria as
 select c.categoryid, c.CategoryName, sum(p.UnitsInStock) Cantidad
 from Products p inner join Categories c
@@ -64,10 +64,10 @@ from [Order Details]
 group by OrderID
 having sum(Quantity * UnitPrice) > 1000
 
---10. Mostrar el numero de ordenes realizadas de cada uno de los clientes por mes y aÒo.
---11. Mostrar el n˙mero de Ûrdenes realizadas de cada uno de los empleados en cada territorio.
---12. Seleccionar cuantos proveedores tengo en cada paÌs, considerando solo a los nombre de los proveedores que comienzan 
---    con la letra E hasta la letra P, adem·s de mostrar solo los paÌses donde tenga m·s de 2 proveedores.
+--10. Mostrar el numero de ordenes realizadas de cada uno de los clientes por mes y a√±o.
+--11. Mostrar el n√∫mero de √≥rdenes realizadas de cada uno de los empleados en cada territorio.
+--12. Seleccionar cuantos proveedores tengo en cada pa√≠s, considerando solo a los nombre de los proveedores que comienzan 
+--    con la letra E hasta la letra P, adem√°s de mostrar solo los pa√≠ses donde tenga m√°s de 2 proveedores.
 select Country, count(*) CantidadProveedores
 from Suppliers
 where CompanyName like '[e-p]%'
@@ -75,9 +75,9 @@ group by Country
 having count(*) > 2
 order by 2 desc
 
---13. Obtener el n˙mero de productos, por cada categorÌa. Mostrando el nombre de la categorÌa, el nombre del producto y el total de
---    productos por categorÌa, solamente de las categorÌas 3, 5 y 8. Ordenar por el nombre de la categorÌa.
---14. Hacer una consulta paramÈtrica que muestre los productos que se encuentra en un rango de precios 
+--13. Obtener el n√∫mero de productos, por cada categor√≠a. Mostrando el nombre de la categor√≠a, el nombre del producto y el total de
+--    productos por categor√≠a, solamente de las categor√≠as 3, 5 y 8. Ordenar por el nombre de la categor√≠a.
+--14. Hacer una consulta param√©trica que muestre los productos que se encuentra en un rango de precios 
 declare @PrecioDesde int, @PrecioHasta int
 set @PrecioDesde = 50
 set @PrecioHasta = 100
@@ -86,28 +86,28 @@ select *
 from products
 where unitprice between @PrecioDesde and @PrecioHasta
 
---16. Hacer una consulta paramÈtrica que muestre la cantidad de unidades vendidas por empleado por un aÒo determinado
-declare @aÒo int, @unidades int
-set @aÒo = 1996
+--16. Hacer una consulta param√©trica que muestre la cantidad de unidades vendidas por empleado por un a√±o determinado
+declare @a√±o int, @unidades int
+set @a√±o = 1996
 set @unidades = 1000
 
 
-select year(o.orderdate) AÒo, e.FirstName + ' ' + e.LastName Empleado, sum(od.Quantity) UnidadesVendidas
+select year(o.orderdate) A√±o, e.FirstName + ' ' + e.LastName Empleado, sum(od.Quantity) UnidadesVendidas
 from Employees e inner join orders o
 	on e.EmployeeID = o.EmployeeID
 inner join [Order Details] od
 	on od.OrderID = o.OrderID
-where year(o.orderdate) = @aÒo
+where year(o.orderdate) = @a√±o
 group by year(o.orderdate), e.FirstName + ' ' + e.LastName
 having sum(od.Quantity) > @unidades 
 order by 3 desc
 
 
---17. Hacer una consulta par·metrica que muestre los productos mas vendidos por aÒo segun el numero de registros "N" que 
+--17. Hacer una consulta par√°metrica que muestre los productos mas vendidos por a√±o segun el numero de registros "N" que 
 --    se quieere mostrar y mostrar en monto vendido
---18. Mostrar en una consulta par·metrica los productos no vendidos en un aÒo o preeveedor determinado
-declare @aÒo int, @proveedor nvarchar(40)
-set @aÒo = 1997
+--18. Mostrar en una consulta par√°metrica los productos no vendidos en un a√±o o preeveedor determinado
+declare @a√±o int, @proveedor nvarchar(40)
+set @a√±o = 1997
 set @proveedor = 'Bigfoot Breweries'
 
 select *
@@ -120,13 +120,13 @@ where ProductID in (
 		on od.ProductID = p.ProductID
 	inner join Suppliers s
 		on s.SupplierID = p.SupplierID
-	where year(o.OrderDate) = @aÒo
+	where year(o.OrderDate) = @a√±o
 	and s.CompanyName = @proveedor
 )
 
 select * from Suppliers
 
---19. Hacer una consulta paramÈtrica para buscar productos de acuerdo a un patrÛn y mostrar como resultado el empleado
+--19. Hacer una consulta param√©trica para buscar productos de acuerdo a un patr√≥n y mostrar como resultado el empleado
 --    y la cantidad de productos vendidos y el nombre del o los productos
 
 alter procedure BuscaProductos (@buscar nvarchar(40)) as 
