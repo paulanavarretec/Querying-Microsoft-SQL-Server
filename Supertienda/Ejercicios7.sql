@@ -1,4 +1,4 @@
---Mostrar el modo envío menos solitado por cliente
+--Mostrar el modo envÃ­o menos solitado por cliente
 create view ModoEnvioMenosUtilizado as
 	select top 1000000
 		Nombre, ModoEnvio, CantidadEnvios
@@ -20,7 +20,7 @@ select * from ModoEnvioMenosUtilizado
 --
 create view ModoEnvioPorCliente as
 	select top 100000
-		nombre, [En el día], [Urgente], [Semi-urgente], [Normal]
+		nombre, [En el dÃ­a], [Urgente], [Semi-urgente], [Normal]
 	from (
 		select b.Nombre, c.ModoEnvio
 		from Pedidos a inner join clientes b
@@ -31,14 +31,14 @@ create view ModoEnvioPorCliente as
 		) x
 	PIVOT (
 		count(ModoEnvio)
-		for ModoEnvio in ([En el día], [Urgente], [Semi-urgente], [Normal])
+		for ModoEnvio in ([En el dÃ­a], [Urgente], [Semi-urgente], [Normal])
 	) y
 	order by nombre
 
 select * from ModoEnvioPorCliente
 
---Hacer consulta paramétrica para mostrar la cantidad de productos que se envían por categoria
---y/o modo de envío (en cualquier combinación), con y sin detalle por producto
+--Hacer consulta paramÃ©trica para mostrar la cantidad de productos que se envÃ­an por categoria
+--y/o modo de envÃ­o (en cualquier combinaciÃ³n), con y sin detalle por producto
 declare @modoenvio varchar(15), @categoria varchar(50), @detalle varchar(1)
 
 set @modoenvio = ''
@@ -85,7 +85,7 @@ end
 ---------------------
 exec ModoEnvioCategoriaProducto @categoria='Muebles'
 
-alter proc ModoEnvioCategoriaProducto (@modoenvio varchar(15)='', @categoria varchar(50)='', @detalle varchar(1)='N') as
+create proc ModoEnvioCategoriaProducto (@modoenvio varchar(15)='', @categoria varchar(50)='', @detalle varchar(1)='N') as
 
 if @detalle = 'N'
 begin
@@ -176,7 +176,7 @@ create proc ModoEnvioCategoriaProducto2 (@modoenvio varchar(15)='', @categoria v
 	having (@detalle = 'S' and producto is not null) or (@detalle = 'N' and producto is null)
 	order by 1, 2, 3, 4 desc
 
---Crear una función que muestre el cliente que más ha comprado de un producto
+--Crear una funciÃ³n que muestre el cliente que mÃ¡s ha comprado de un producto
 
 declare @CODProducto varchar(20)
 set @CODProducto = 'FUR-ADV-10000108'
@@ -234,7 +234,7 @@ create trigger trProductosINS on Productos
 	after insert as
 begin
 	insert Productos_Log
-	select *, 'Inserción', system_user, getdate() from inserted
+	select *, 'InserciÃ³n', system_user, getdate() from inserted
 end
 
 create trigger trProductosDEL on Productos
@@ -249,10 +249,10 @@ create trigger trProductosUPD on Productos
 	after update as
 begin
 	insert Productos_Log
-	select *, 'Actualización/D', system_user, getdate() from deleted
+	select *, 'ActualizaciÃ³n/D', system_user, getdate() from deleted
 
 	insert Productos_Log
-	select *, 'Actualización/I', system_user, getdate() from inserted
+	select *, 'ActualizaciÃ³n/I', system_user, getdate() from inserted
 end
 
 select top 10 * from productos where CODProducto = 'NEW-PRD-000100'
@@ -288,18 +288,18 @@ begin
 	set @ins = isnull((select count(1) from inserted), 0)
 	set @del = isnull((select count(1) from deleted), 0)
 
-	if @ins > 0 and @del > 0 --actualización
+	if @ins > 0 and @del > 0 --actualizaciÃ³n
 	begin
 		insert into Clientes_Log
-		select *, 'Acualización/B', SYSTEM_USER, getdate() from deleted
+		select *, 'AcualizaciÃ³n/B', SYSTEM_USER, getdate() from deleted
 
 		insert into Clientes_Log
-		select *, 'Acualización/I', SYSTEM_USER, getdate() from inserted
+		select *, 'AcualizaciÃ³n/I', SYSTEM_USER, getdate() from inserted
 	end
-	if @ins > 0 and @del = 0 --inserción
+	if @ins > 0 and @del = 0 --inserciÃ³n
 	begin
 		insert into Clientes_Log
-		select *, 'inserción', SYSTEM_USER, getdate() from inserted
+		select *, 'inserciÃ³n', SYSTEM_USER, getdate() from inserted
 	end
 	if @ins = 0 and @del > 0 --borrado
 	begin
@@ -336,8 +336,8 @@ select
 	,DiaSemNum		= datepart(dw, getdate())
 	,DiaSemana		= datename(dw, getdate())
 	,DiaMesNum		= datepart(d, getdate())
-	,DiaAñoNum		= datepart(dayofyear, getdate())
-	,SemanaAño		= datepart(wk, getdate())
+	,DiaAÃ±oNum		= datepart(dayofyear, getdate())
+	,SemanaAÃ±o		= datepart(wk, getdate())
 	,MesNombre		= datename(m, getdate())
 	,MesNum			= datepart(m, getdate())
 	,Trimestre		= case datepart(q, getdate())
@@ -347,8 +347,8 @@ select
 							else '4to Trimestre'
 						end
 	,Semestre		= iif(month(getdate()) < 7, '1er Semestre', '2do Semestre')
-	,Año			= year(getdate())
-	,AñoMes			= convert(varchar(4), year(getdate())) + '-' + right('0' + convert(varchar(2), month(getdate())), 2)
+	,AÃ±o			= year(getdate())
+	,AÃ±oMes			= convert(varchar(4), year(getdate())) + '-' + right('0' + convert(varchar(2), month(getdate())), 2)
 into Calendario
 
 select * from calendario
@@ -378,8 +378,8 @@ begin
 	,DiaSemNum		= datepart(dw, @fecha)
 	,DiaSemana		= datename(dw, @fecha)
 	,DiaMesNum		= datepart(d, @fecha)
-	,DiaAñoNum		= datepart(dayofyear, @fecha)
-	,SemanaAño		= datepart(wk, @fecha)
+	,DiaAÃ±oNum		= datepart(dayofyear, @fecha)
+	,SemanaAÃ±o		= datepart(wk, @fecha)
 	,MesNombre		= datename(m, @fecha)
 	,MesNum			= datepart(m, @fecha)
 	,Trimestre		= case datepart(q, @fecha)
@@ -389,8 +389,8 @@ begin
 							else '4to Trimestre'
 						end
 	,Semestre		= iif(month(@fecha) < 7, '1er Semestre', '2do Semestre')
-	,Año			= year(@fecha)
-	,AñoMes			= convert(varchar(4), year(@fecha)) + '-' + right('0' + convert(varchar(2), month(@fecha)), 2)
+	,AÃ±o			= year(@fecha)
+	,AÃ±oMes			= convert(varchar(4), year(@fecha)) + '-' + right('0' + convert(varchar(2), month(@fecha)), 2)
 
 	set @fecha = dateadd(day, 1, @fecha)
 end
@@ -417,8 +417,8 @@ begin
 	,DiaSemNum		= datepart(dw, @fecha)
 	,DiaSemana		= datename(dw, @fecha)
 	,DiaMesNum		= datepart(d, @fecha)
-	,DiaAñoNum		= datepart(dayofyear, @fecha)
-	,SemanaAño		= datepart(wk, @fecha)
+	,DiaAÃ±oNum		= datepart(dayofyear, @fecha)
+	,SemanaAÃ±o		= datepart(wk, @fecha)
 	,MesNombre		= datename(m, @fecha)
 	,MesNum			= datepart(m, @fecha)
 	,Trimestre		= case datepart(q, @fecha)
@@ -428,8 +428,8 @@ begin
 							else '4to Trimestre'
 						end
 	,Semestre		= iif(month(@fecha) < 7, '1er Semestre', '2do Semestre')
-	,Año			= year(@fecha)
-	,AñoMes			= convert(varchar(4), year(@fecha)) + '-' + right('0' + convert(varchar(2), month(@fecha)), 2)
+	,AÃ±o			= year(@fecha)
+	,AÃ±oMes			= convert(varchar(4), year(@fecha)) + '-' + right('0' + convert(varchar(2), month(@fecha)), 2)
 
 	set @fecha = dateadd(day, 1, @fecha)
 end
